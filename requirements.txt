@@ -1,0 +1,10 @@
+# SafeFall AI — Core Dependencies
+streamlit>=1.30.0
+pandas>=2.0.0
+plotly>=5.15.0
+pillow>=9.0.0
+numpy>=1.23.0
+
+# Optional Computer Vision & Pose Estimation
+# The application automatically runs in fallback/synthetic mode if these are not installed.
+opencv-python>=4.8.0
