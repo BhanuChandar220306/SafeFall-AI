@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeFall AI — Agentic Fall Detection & Context-Aware Emergency Response</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Header Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">🛡️</div>
+        <div>
+          <h1 class="brand-title">SafeFall AI</h1>
+          <p class="brand-subtitle">Agentic Fall Detection & Context-Aware Emergency Response</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div id="system-status-pill" class="status-pill status-active">
+          <span class="status-dot"></span>
+          <span id="system-status-text">OPERATIONAL</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mandatory Safety & Prototype Disclaimer -->
+  <div class="disclaimer-banner">
+    <div class="disclaimer-icon">⚠️</div>
+    <div class="disclaimer-text">
+      <strong>CRITICAL SAFETY & PROTOTYPE DISCLAIMER:</strong> SafeFall AI is an experimental hackathon technology prototype designed strictly for demonstration and research purposes. It is <strong>NOT a certified medical device</strong> (FDA / CE mark), does not establish a medical diagnosis or state of unconsciousness, does not operate physical locks, and does <strong>NOT connect to real 911 / emergency dispatch services</strong>. All emergency dispatch notifications (SMS, WhatsApp, Voice) are <strong>simulations</strong> logged within this demonstration interface.
+    </div>
+  </div>
+
+  <main class="main-layout">
+
+    <!-- Top KPI Summary Row -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">System State</span>
+        <div class="kpi-value-container">
+          <span id="kpi-system-state" class="badge badge-success">🟢 PASSIVE SCANNING</span>
+        </div>
+        <span class="kpi-subtext">Autonomous Monitoring</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Active Monitored Zone</span>
+        <div class="kpi-value" id="kpi-active-room">Living Room</div>
+        <span class="kpi-subtext" id="kpi-room-risk">Low/Moderate Risk Zone</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Total Incidents</span>
+        <div class="kpi-value" id="kpi-total-incidents">0</div>
+        <span class="kpi-subtext">Stored in LocalStorage</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Escalated Dispatches</span>
+        <div class="kpi-value text-danger" id="kpi-escalated-count">0</div>
+        <span class="kpi-subtext" id="kpi-escalated-rate">0% Escalation Rate</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Verified False Alarms</span>
+        <div class="kpi-value text-success" id="kpi-safe-count">0</div>
+        <span class="kpi-subtext">Safe Self-Resolved</span>
+      </div>
+    </section>
+
+    <!-- Active Verification Modal / Banner -->
+    <section id="verification-panel" class="verification-panel hidden">
+      <div class="verification-header">
+        <div class="verification-title-group">
+          <span class="alert-icon-pulse">🚨</span>
+          <div>
+            <h2 id="verification-title">POTENTIAL FALL DETECTED IN LIVING ROOM</h2>
+            <p id="verification-desc">A potential fall signal was registered. Please confirm resident condition immediately. If unconfirmed within the window, emergency escalation will initiate automatically.</p>
+          </div>
+        </div>
+        <div class="countdown-badge">
+          <span class="countdown-clock">⏱️</span>
+          <span id="countdown-timer-text">10s REMAINING</span>
+        </div>
+      </div>
+
+      <!-- Animated Progress Bar -->
+      <div class="progress-track">
+        <div id="countdown-progress-bar" class="progress-fill"></div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="verification-actions">
+        <button id="btn-im-ok" class="btn btn-success btn-lg">
+          ✅ I'M OK (Cancel Alarm)
+        </button>
+        <button id="btn-need-help" class="btn btn-danger btn-lg">
+          🚨 NEED HELP (Immediate Dispatch)
+        </button>
+      </div>
+    </section>
+
+    <!-- Workspace Columns: Detection Hub vs Action Center -->
+    <div class="workspace-grid">
+
+      <!-- LEFT COLUMN: Monitoring Hub & Simulation -->
+      <div class="workspace-column">
+        
+        <!-- Fall Simulation Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>⚡ 1. Reliable Fall Simulation (Zero-Camera Needed)</h3>
+          </div>
+          <div class="card-body">
+            <p class="card-caption">
+              Click below to test the complete end-to-end incident orchestration, verification countdown, and context-aware escalation workflow without needing a camera.
+            </p>
+
+            <div class="form-group">
+              <label for="select-scenario">Select Fall Scenario:</label>
+              <select id="select-scenario" class="form-control">
+                <option value="Sudden slip on wet bathroom tile">Sudden slip on wet bathroom tile (High Risk Zone)</option>
+                <option value="Loss of balance at living room carpet edge" selected>Loss of balance at living room carpet edge</option>
+                <option value="Trip and forward fall in kitchen">Trip and forward fall in kitchen</option>
+                <option value="Missed step on staircase landing">Missed step on staircase landing (Critical Risk Zone)</option>
+                <option value="Bedside transfer instability">Bedside transfer instability</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="select-room">Monitored Room / Zone:</label>
+                <select id="select-room" class="form-control">
+                  <option value="Living Room" selected>Living Room</option>
+                  <option value="Bathroom">Bathroom</option>
+                  <option value="Kitchen">Kitchen</option>
+                  <option value="Bedroom">Bedroom</option>
+                  <option value="Staircase">Staircase</option>
+                </select>
+              </div>
+
+              <div class="form-group flex-1">
+                <label for="input-countdown">Verification Window (sec):</label>
+                <input type="number" id="input-countdown" class="form-control" min="5" max="30" value="10">
+              </div>
+            </div>
+
+            <!-- Room Hazard Context Alert -->
+            <div id="room-hazard-card" class="hazard-card info">
+              <span id="room-hazard-icon">ℹ️</span>
+              <div id="room-hazard-text">
+                <strong>Low/Moderate Risk Zone:</strong> Area rugs, coffee tables, standard residential layout.
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button id="btn-simulate-fall" class="btn btn-primary flex-2">
+                ⚡ SIMULATE FALL INCIDENT
+              </button>
+              <button id="btn-standby-reset" class="btn btn-outline flex-1">
+                🔄 Standby Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vision & Sensor Feed Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>👁️ 2. Vision Feed & Pose Estimation</h3>
+            <span class="sub-badge">Signal Preview</span>
+          </div>
+          <div class="card-body">
+            <p class="card-caption">
+              Treats posture estimation as potential-fall signals (not clinical diagnostics). Switch between the Synthetic Sensor visualizer and your live webcam preview.
+            </p>
+
+            <!-- Channel Selector Tabs -->
+            <div class="segmented-control">
+              <button id="tab-sensor-synthetic" class="segment-btn active">Synthetic Sensor Simulation</button>
+              <button id="tab-sensor-webcam" class="segment-btn">Webcam Preview (Optional)</button>
+            </div>
+
+            <!-- Synthetic Canvas View -->
+            <div id="synthetic-view" class="sensor-view-container">
+              <canvas id="synthetic-canvas" width="640" height="360" class="sensor-canvas"></canvas>
+              
+              <div class="posture-selector-bar">
+                <span class="control-label">Simulate Pose:</span>
+                <div class="btn-group-sm">
+                  <button id="pose-btn-standing" class="btn-sm active">Standing (Normal)</button>
+                  <button id="pose-btn-stumbling" class="btn-sm">Stumbling (Unstable)</button>
+                  <button id="pose-btn-fallen" class="btn-sm">Fallen (Ground)</button>
+                </div>
+              </div>
+
+              <button id="btn-trigger-vision-fall" class="btn btn-warning btn-block" style="margin-top: 10px;">
+                ⚠️ Trigger Fall Workflow from Vision Signal
+              </button>
+            </div>
+
+            <!-- Webcam Preview View -->
+            <div id="webcam-view" class="sensor-view-container hidden">
+              <div class="webcam-box">
+                <video id="webcam-video" autoplay playsinline muted class="sensor-video hidden"></video>
+                <div id="webcam-placeholder" class="camera-placeholder">
+                  <span class="camera-icon">📷</span>
+                  <p>Webcam preview is currently inactive.</p>
+                  <p class="subtext">Click "Start Webcam" to request browser camera permission.</p>
+                </div>
+              </div>
+
+              <div id="webcam-status-msg" class="webcam-status"></div>
+
+              <div class="btn-group" style="margin-top: 10px;">
+                <button id="btn-start-webcam" class="btn btn-primary flex-1">
+                  🎥 Start Webcam
+                </button>
+                <button id="btn-stop-webcam" class="btn btn-outline flex-1" disabled>
+                  ⏹️ Stop Webcam
+                </button>
+              </div>
+
+              <p class="caption-note">
+                🔒 Privacy Guarantee: Webcam frames are processed entirely in your browser memory via the HTML5 MediaDevices API. No video or audio is ever uploaded to any server.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Incident Action Center -->
+      <div class="workspace-column">
+        
+        <!-- Latest Incident Report Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🤖 Context-Aware Incident Action Center</h3>
+          </div>
+          <div class="card-body">
+            
+            <div id="incident-report-empty" class="empty-state">
+              <div class="empty-icon">🛡️</div>
+              <h4>System is in Standby Monitoring Mode</h4>
+              <p>Trigger a fall event using the <strong>"⚡ SIMULATE FALL INCIDENT"</strong> button on the left, or click <strong>"🌱 Seed Demo Incidents"</strong> below to review sample incident reports.</p>
+            </div>
+
+            <div id="incident-report-card" class="incident-card hidden">
+              <div class="incident-card-top">
+                <span class="report-badge" id="rep-id-badge">INCIDENT #1</span>
+                <span id="rep-severity-badge" class="badge badge-danger">CRITICAL</span>
+              </div>
+              <h3 id="rep-status-title" class="incident-status-title">Escalated - Timeout / Unresponsive</h3>
+
+              <div class="meta-grid">
+                <div class="meta-item">
+                  <span class="meta-label">Timestamp</span>
+                  <span class="meta-val" id="rep-timestamp">2026-10-14 13:50:00</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Room / Zone</span>
+                  <span class="meta-val" id="rep-room">Bathroom</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Detection Channel</span>
+                  <span class="meta-val" id="rep-channel">Simulated Fall Trigger</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Verification Outcome</span>
+                  <span class="meta-val" id="rep-outcome">No Response (Timeout)</span>
+                </div>
+              </div>
+
+              <div class="section-divider"></div>
+
+              <div class="reasoning-box">
+                <h4>🧠 Context-Aware AI Triage Reasoning</h4>
+                <p id="rep-reasoning">Resident was unresponsive during countdown in high-risk zone.</p>
+              </div>
+
+              <div class="action-plan-box">
+                <h4>📋 Recommended Emergency Response Plan</h4>
+                <p id="rep-action">👉 <strong>Next Action:</strong> Dispatch primary caregiver immediately via Simulated SMS & WhatsApp.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Simulated Emergency Dispatch Terminal -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📡 Simulated Emergency Dispatch Broadcast</h3>
+            <span class="tag-simulation">SIMULATION ONLY</span>
+          </div>
+          <div class="card-body">
+            <p class="card-caption">
+              <strong>EXPLICIT SIMULATION NOTICE:</strong> All dispatches below are simulated logs. No real messages or phone calls are placed to telecom carriers or emergency responders.
+            </p>
+
+            <div id="dispatch-empty" class="empty-state-sm">
+              <p>No active dispatch. Trigger an escalation to generate simulated multi-channel alerts.</p>
+            </div>
+
+            <div id="dispatch-list" class="dispatch-container hidden">
+
+              <!-- Simulated SMS Item -->
+              <div class="dispatch-item">
+                <div class="dispatch-item-header">
+                  <span>📱 Simulated SMS Broadcast</span>
+                  <span class="badge badge-info">SIMULATED - DELIVERED TO LOG</span>
+                </div>
+                <div class="dispatch-item-body">
+                  <div class="dispatch-contact-info" id="sms-contact-info">To: Sarah Miller (Primary Caregiver) • +1 (555) 234-8901</div>
+                  <pre class="payload-box" id="sms-payload-text"></pre>
+                </div>
+              </div>
+
+              <!-- Simulated WhatsApp Item -->
+              <div class="dispatch-item">
+                <div class="dispatch-item-header">
+                  <span>💬 Simulated WhatsApp Emergency Alert</span>
+                  <span class="badge badge-info">SIMULATED - DELIVERED TO LOG</span>
+                </div>
+                <div class="dispatch-item-body">
+                  <div class="dispatch-contact-info" id="whatsapp-contact-info">To: Sarah Miller (Primary Caregiver) • +1 (555) 234-8901</div>
+                  <pre class="payload-box" id="whatsapp-payload-text"></pre>
+                </div>
+              </div>
+
+              <!-- Simulated Voice Call Item -->
+              <div class="dispatch-item">
+                <div class="dispatch-item-header">
+                  <span>📞 Simulated Automated Voice Call (TTS Script)</span>
+                  <span class="badge badge-info">SIMULATED - ANSWERED & ACKNOWLEDGED</span>
+                </div>
+                <div class="dispatch-item-body">
+                  <div class="dispatch-contact-info" id="voice-contact-info">To: Building Concierge / First Responder • +1 (555) 901-3320</div>
+                  <pre class="payload-box" id="voice-payload-text"></pre>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom Navigation Tabs -->
+    <section class="tabs-section">
+      <div class="tab-nav">
+        <button class="tab-button active" data-tab="tab-history">📜 Incident History (LocalStorage)</button>
+        <button class="tab-button" data-tab="tab-analytics">📈 Analytics & Risk Trends</button>
+        <button class="tab-button" data-tab="tab-contacts">👥 Emergency Contacts Directory</button>
+        <button class="tab-button" data-tab="tab-standards">📘 Safety & Architecture Standards</button>
+      </div>
+
+      <!-- TAB 1: Incident History -->
+      <div id="tab-history" class="tab-content active">
+        <div class="table-controls">
+          <div class="filter-group">
+            <label for="filter-room">Room Filter:</label>
+            <select id="filter-room" class="form-control-sm">
+              <option value="ALL">All Rooms</option>
+              <option value="Living Room">Living Room</option>
+              <option value="Bathroom">Bathroom</option>
+              <option value="Kitchen">Kitchen</option>
+              <option value="Bedroom">Bedroom</option>
+              <option value="Staircase">Staircase</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-severity">Severity Filter:</label>
+            <select id="filter-severity" class="form-control-sm">
+              <option value="ALL">All Severities</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+
+          <div class="action-buttons">
+            <button id="btn-export-csv" class="btn btn-sm btn-outline">📥 Export CSV</button>
+            <button id="btn-seed-data" class="btn btn-sm btn-outline">🌱 Seed Demo Incidents</button>
+            <button id="btn-clear-data" class="btn btn-sm btn-danger-outline">🗑️ Clear History</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+                <th>Room</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Verification</th>
+                <th>Severity</th>
+                <th>Recommended Action</th>
+              </tr>
+            </thead>
+            <tbody id="incidents-table-body">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: Analytics & Trends -->
+      <div id="tab-analytics" class="tab-content">
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <h4>Spatial Distribution of Fall Events (by Room)</h4>
+            <div class="chart-wrapper">
+              <canvas id="chart-room-distribution" width="450" height="260"></canvas>
+            </div>
+          </div>
+          <div class="analytics-card">
+            <h4>Incident Severity Distribution</h4>
+            <div class="chart-wrapper">
+              <canvas id="chart-severity-distribution" width="450" height="260"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Emergency Contacts -->
+      <div id="tab-contacts" class="tab-content">
+        <div class="contacts-header">
+          <h4>Configured Escalation Contacts (Simulation Sandbox)</h4>
+          <p class="card-caption">All notifications for these contacts are mock audit payloads generated for evaluator review.</p>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Priority</th>
+                <th>Name</th>
+                <th>Relationship</th>
+                <th>Phone</th>
+                <th>Enabled Channels</th>
+              </tr>
+            </thead>
+            <tbody id="contacts-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="add-contact-box">
+          <h4>➕ Register Additional Demo Contact</h4>
+          <form id="add-contact-form" class="form-row">
+            <div class="form-group flex-1">
+              <input type="text" id="new-contact-name" class="form-control" placeholder="Contact Name (e.g. John Doe)" required>
+            </div>
+            <div class="form-group flex-1">
+              <input type="text" id="new-contact-relation" class="form-control" placeholder="Relationship (e.g. Neighbor)" required>
+            </div>
+            <div class="form-group flex-1">
+              <input type="text" id="new-contact-phone" class="form-control" placeholder="Phone Number" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Contact</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 4: Safety & Architecture Standards -->
+      <div id="tab-standards" class="tab-content">
+        <div class="standards-content">
+          <h3>🛡️ SafeFall AI Safety & Ethical Guardrails</h3>
+          <ol>
+            <li><strong>Non-Diagnostic Bounding:</strong> SafeFall AI interprets pose vectors strictly as <em>potential fall posture signals</em>. It makes no claim to diagnose bone fractures, concussions, or physiological causes.</li>
+            <li><strong>Human-in-the-Loop Verification:</strong> Every detected fall initiates an audible and visual verification countdown giving the resident primary autonomy to cancel false alarms.</li>
+            <li><strong>Zero Real Network Overhead / Simulation Clarity:</strong> Hackathon compliance ensures that no unsolicited SMS, cellular phone call, or external emergency service is contacted without authorization.</li>
+            <li><strong>Air-Gapped Safety:</strong> System does NOT control physical locks, access gates, or hardware actuators.</li>
+            <li><strong>Client-Side Privacy:</strong> Camera feeds are processed strictly locally in browser memory via standard Web APIs without any video streaming to cloud servers.</li>
+          </ol>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>SafeFall AI — Hackathon MVP Prototype | Browser-Based Zero-Config Static Web Application</p>
+      <p class="footer-subtext">Deployable directly to Vercel, Netlify, or GitHub Pages without Python or backend servers.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
